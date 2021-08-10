@@ -1,0 +1,158 @@
+mysql
+
+CREATE DATABASE QuantigrationUpdates;
+
+SHOW DATABASES;
+
+USE QuantigrationUpdates;
+
+//TABLE CREATION STATEMENTS
+
+CREATE TABLE Customers (
+	CustomerID INT,
+	FirstName VARCHAR(25),
+	LastName VARCHAR(25),
+	Street VARCHAR(50),
+	City VARCHAR(50),
+	State VARCHAR(25),
+	ZipCode INT,
+	Telephone VARCHAR(15),
+	PRIMARY KEY(CustomerID)
+);
+
+CREATE TABLE Orders (
+	OrderID INT,
+	CustomerID INT,
+	SKU VARCHAR(20),
+	Description VARCHAR(50),
+	PRIMARY KEY(OrderID)
+);
+
+CREATE TABLE RMA (
+	RMAID INT,
+	OrderID INT,
+	Step VARCHAR(50),
+	Status VARCHAR(15), 
+	Reason VARCHAR(15),    
+	PRIMARY KEY(RMAID)
+);
+
+//ADDITION OF FOREIGN KEY CONSTRAINTS
+
+ALTER TABLE Orders
+	ADD FOREIGN KEY(CustomerID) REFERENCES Customers(CustomerID);
+  
+ALTER TABLE RMA
+	ADD FOREIGN KEY(OrderID) REFERENCES Orders(OrderID);
+
+//CREATION OF "Collaborators" VIEW
+  
+CREATE VIEW Collaborators AS
+	SELECT CustomerID AS CollaboratorID, FirstName, LastName, Street, City, State, ZipCode, Telephone
+	FROM Customers;
+
+//DATA LOAD/IMPORT STATEMENTS
+
+LOAD DATA INFILE '/home/codio/workspace/customers.csv' 
+INTO TABLE Customers 
+FIELDS TERMINATED BY ',';
+
+LOAD DATA INFILE '/home/codio/workspace/orders.csv' 
+INTO TABLE Orders 
+FIELDS TERMINATED BY ',';
+
+LOAD DATA INFILE '/home/codio/workspace/rma.csv' 
+INTO TABLE RMA 
+FIELDS TERMINATED BY ',';
+
+//THESE STATEMENTS FIX CORRUPTED VALUES IN THE "Reason" FIELD
+
+UPDATE RMA
+SET Reason = 'Rejected'
+WHERE Reason LIKE 'Rej%';
+
+UPDATE RMA
+SET Reason = 'Other'
+WHERE Reason LIKE 'Oth%';
+
+//COUNT OF ORDERS FROM FRAMINGHAM MASSACHUSETTS
+
+SELECT COUNT(*)
+FROM Customers INNER JOIN Orders on Customers.CustomerID = Orders.CustomerID
+WHERE UPPER(Customers.city) = "FRAMINGHAM" AND UPPER(Customers.state) = 'MASSACHUSETTS';
+
+//COUNT OF ALL CUSTOMERS FROM MASSACHUSETTS
+
+SELECT COUNT(*)
+FROM Customers
+WHERE UPPER(Customers.state) = 'MASSACHUSETTS';
+
+//INSERT NEW RECORDS TO CUSTOMERS
+
+INSERT INTO Customers (CustomerID, FirstName, LastName, Street, City, State, ZipCode, Telephone)
+  VALUES
+  (100004, 'Luke', 'Skywalker', '15 Maiden Lane', 'New York', 'NY', 10222, '212-555-1234'),
+  (100005, 'Winston', 'Smith', '123 Sycamore Street', 'Greensboro', 'NC', 27401, '919-555-6623'),
+  (100006, 'MaryAnne', 'Jenkins', '1 Coconut Way', 'Jupiter', 'FL', 33458, '321-555-8907'),
+  (100007, 'Janet', 'Williams', '55 Redondo Beach Blvd', 'Torrence', 'CA', 90501, '310-555-5678');
+  
+SELECT *
+FROM Customers
+WHERE CustomerID > 100003;
+
+//INSERT NEW RECORDS TO ORDERS
+
+INSERT INTO Orders (OrderID, CustomerID, SKU, Description)
+  VALUES
+  (1204305, 100004, 'ADV-24-10C', 'Advanced Switch 10GigE Copper 24 port'),
+  (1204306, 100005, 'ADV-48-10F', 'Advanced Switch 10 GigE Copper/Fiber 44 port copper 4 port fiber'),
+  (1204307, 100006, 'ENT-24-10F', 'Enterprise Switch 10GigE SFP+ 24 Port'),
+  (1204308, 100007, 'ENT-48-10F', 'Enterprise Switch 10GigE SFP+ 48 port');
+  
+SELECT *
+FROM Orders
+WHERE OrderID > 1204304;
+
+//COUNT OF ORDERS FROM WOONSOCKET MASSACHUSETTS
+
+SELECT COUNT(*)
+FROM Customers
+WHERE UPPER(Customers.city) = "WOONSOCKET";
+
+SELECT *
+FROM RMA
+WHERE OrderID = 5175;
+
+SELECT Status, Step
+FROM RMA
+WHERE OrderID = 5175;
+
+//UPDATE RECORD IN RMA
+
+UPDATE RMA
+SET Status = "Complete"
+WHERE OrderID = 5175;
+
+UPDATE RMA
+SET Step = "Credit Customer Account"
+WHERE OrderID = 5175;
+
+//COUNT THE NUMBER OF RMA RECORDS WITH "REJECTED"
+
+SELECT COUNT(*)
+FROM RMA
+WHERE UPPER(Reason) = "REJECTED";
+
+//DELETE RMA REJECTED
+
+DELETE FROM RMA
+WHERE UPPER(Reason) = "REJECTED";
+
+//THIS STATEMENT PERFORMS THE "Orders" TABLE EXPORT
+
+SELECT *
+FROM Orders
+INTO OUTFILE '/home/codio/workspace/output/qupd-orders-data.csv'
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n';
