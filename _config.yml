@@ -1,12 +1,12 @@
-title: Corey Roth # your name (or website title) here
-logo: "/images/Profile picture.jpg?raw=true" # your photo (or logo) here
-description: > # your text below (remove <br> elements if you don't need line breaks)
+title: Corey Roth
+logo: "/images/Profile picture.jpg?raw=true"
+description: >
   Veteran of the US Navy who has been working as an industrial electrician since separating from the Military.
   I decided to go back to school and pursue a Bachelor's Degree in Computer Science and I'm 
   looking forward to graduating in the fall and ready to advance my career to the next level. 
   <br><br>
   <a href="https://www.linkedin.com/in/corey-roth-649ba3115/">View My LinkedIn Profile</a> 
   <br><br>
-  <a href="coreyroth@icloud.com">
+  email: coreyroth@icloud.com
   
 theme: jekyll-theme-minimal
