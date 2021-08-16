@@ -3,10 +3,14 @@ logo: "/images/Profile picture.jpg?raw=true"
 description: >
   Veteran of the US Navy who has been working as an industrial electrician since separating from the Military.  I decided to go back to school and pursue a Bachelor Degree in Computer Science and I'm 
   looking forward to graduating in the fall and ready to advance my career to the next level.
-  
-email: coreyroth@icloud.com
   <br><br>
   <a href="https://www.linkedin.com/in/corey-roth-649ba3115/">View My LinkedIn Profile</a>
+  
+author:
+  social:
+    email:    mailto:mail@qwtel.com
+    #rss:      https://hardyeats.github.io/feed.xml # make sure you provide an absolute URL
+    #download: https://github.com/qwtel/hydejack/archive/v7.5.0.zip
   
 theme: jekyll-theme-minimal
 
